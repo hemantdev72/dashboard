@@ -4,10 +4,14 @@ const {
   getProducts,
   createProduct,
   updateProduct,
-  deleteProduct,seedDatabase
+  deleteProduct,
+  getTopProducts,
+  getCategoryStats
 } = require('../controllers/productController');
 
 router.get('/', getProducts);
+router.get('/top', getTopProducts);
+router.get('/stats', getCategoryStats);
 router.post('/', createProduct);
 router.put('/:id', updateProduct);
 router.delete('/:id', deleteProduct);

@@ -79,3 +79,38 @@ exports.deleteProduct = async (req, res) => {
   }
 };
 
+
+exports.getTopProducts = async (req, res) => {
+  try {
+    const { limit = 3 } = req.query;
+    const topProducts = await Product.find()
+      .sort({ sustainabilityScore: -1 })
+      .limit(parseInt(limit));
+
+    res.json(topProducts);
+  } catch (err) {
+    res.status(500).json({ message: 'Server Error', error: err.message });
+  }
+};
+
+exports.getCategoryStats = async (req, res) => {
+  try {
+    const stats = await Product.aggregate([
+      {
+        $group: {
+          _id: '$category',
+          count: { $sum: 1 },
+          avgScore: { $avg: '$sustainabilityScore' }
+        }
+      },
+      {
+        $sort: { count: -1 }
+      }
+    ]);
+
+    res.json(stats);
+  } catch (err) {
+    res.status(500).json({ message: 'Server Error', error: err.message });
+  }
+};
+
